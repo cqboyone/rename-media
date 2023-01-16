@@ -19,8 +19,9 @@ public class MediaInfo {
     private String tagName;
 
     private boolean isMediaFile;
+    private boolean isMediaInfo;
 
-    public MediaInfo( File file) {
+    public MediaInfo(File file) {
         this.file = file;
         fileName = file.getName();
         if (file.isFile()) {
@@ -31,6 +32,8 @@ public class MediaInfo {
                 tagName = fileName.substring(0, indexOf - 1);
                 if (MediaConstants.VIDEO_SUFFIX_SET.contains(fileSuffix)) {
                     isMediaFile = true;
+                } else if (MediaConstants.INFO_SUFFIX_SET.contains(fileSuffix)) {
+                    isMediaInfo = true;
                 }
             }
         } else if (file.isDirectory()) {

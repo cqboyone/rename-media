@@ -31,7 +31,7 @@ public class RenameJob {
         List<TreeNode<MediaInfo>> elementsIndex = node.getElementsIndex();
         for (TreeNode<MediaInfo> t : elementsIndex) {
             MediaInfo data;
-            if (t.isRoot() || (data = t.getData()) == null || !data.isMediaFile()) {
+            if (t.isRoot() || (data = t.getData()) == null || (!data.isMediaFile() && !data.isMediaInfo())) {
                 continue;
             }
             String tagName = data.getTagName();
