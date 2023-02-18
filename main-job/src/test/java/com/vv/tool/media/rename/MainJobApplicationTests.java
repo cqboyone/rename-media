@@ -1,6 +1,7 @@
 package com.vv.tool.media.rename;
 
 import com.vv.tool.media.rename.info.MediaInfo;
+import com.vv.tool.media.rename.job.RenameJob;
 import com.vv.tool.media.rename.tree.TreeNode;
 import org.junit.Test;
 
@@ -41,6 +42,12 @@ public class MainJobApplicationTests {
            Object rawData = m.group(1);
             System.out.println(rawData);  // 组提取字符串 0x993902CE
         }
+    }
+
+    @Test
+    public void testFileName(){
+        String e = new RenameJob("").findE("[DBD-Raws][龙珠][153][1080P][BDRip][HEVC-10bit][FLAC]");
+        System.out.println(e);
     }
 
 }

@@ -5,6 +5,7 @@ import com.vv.tool.media.rename.info.MediaInfo;
 import com.vv.tool.media.rename.tree.TreeNode;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,21 +70,32 @@ public class RenameJob {
     }
 
     public String findE(String str) {
-        String reg = "\\.*[eE]([0-9]+)\\.*";    // Exxx
-        String s = find(reg, str);
-        if (s != null) {
-            return s;
+        List<String> regs = Arrays.asList(
+                "\\.*[eE]([0-9]+)\\.*",
+                "\\[[0-9]+\\]"
+        );
+        for (String r : regs) {
+            String s = find(r, str);
+            if (s != null) {
+                return findENumber(s);
+            }
         }
+        return null;
+    }
 
-        String reg_01 = "小猪佩奇第八季中文([0-9]+)\\.*";
-        return find(reg_01, str);
+    public String findENumber(String str) {
+        if (str == null) {
+            return "";
+        }
+        String reg = "\\d+";
+        return find(reg, str);
     }
 
     public String find(String reg, String str) {
         Pattern p = Pattern.compile(reg);
         Matcher m = p.matcher(str);
         if (m.find()) {
-            return m.group(1);
+            return m.group(0);
         }
         return null;
     }
