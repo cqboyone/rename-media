@@ -1,12 +1,13 @@
 package com.vv.tool.media.rename.job;
 
-import com.vv.tool.media.rename.constants.MediaConstants;
 import com.vv.tool.media.rename.info.MediaInfo;
 import com.vv.tool.media.rename.tree.TreeNode;
+import lombok.Getter;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,19 +15,38 @@ public class RenameJob {
 
     private String path;
 
+    @Getter
     private TreeNode<MediaInfo> node;
 
 //    private Map
 
     public RenameJob(String path) {
         this.path = path;
+        MediaInfo mediaInfo = buildMediaInfo(new File(path));
+        node = new TreeNode<>(mediaInfo);
+        detailVideoFile(node, mediaInfo);
     }
 
 
     public void doJob() {
-        MediaInfo mediaInfo = buildMediaInfo(new File(path));
-        node = new TreeNode<MediaInfo>(mediaInfo);
-        detailVideoFile(node, mediaInfo);
+        //重命名
+        rootElementsConsumer(this::rename);
+
+//        //增加对e排序重新编号
+//        rootElementsConsumer(data -> {
+//            Integer e = data.getE();
+//
+//
+//            System.out.println();
+//        });
+    }
+
+    /**
+     * 处理root下面的所有对象（所有数据都放到一层了，所以遍历一次）
+     *
+     * @param consumer
+     */
+    public void rootElementsConsumer(Consumer<MediaInfo> consumer) {
 
         //遍历处理每个文件
         List<TreeNode<MediaInfo>> elementsIndex = node.getElementsIndex();
@@ -40,19 +60,30 @@ public class RenameJob {
             if (e == null || "".equals(e)) {
                 continue;
             }
-            String s = t.getParent().getData().getTagName();
-            String newName = s + "E" + e;
-            System.out.println(newName);
-            String filePath = data.getFile().getPath();
-            String fileName = data.getFileName();
-            filePath = filePath.substring(0, filePath.indexOf(fileName));
-            String newFileName = filePath + newName + "." + data.getFileSuffix();
-            data.getFile().renameTo(new File(newFileName));
-            System.out.println(newFileName);
+            data.setE(Integer.valueOf(e));
+            //传入的函数
+            consumer.accept(data);
         }
     }
 
-    public void detailVideoFile(TreeNode<MediaInfo> node, MediaInfo mediaInfo) {
+
+    /**
+     * 对树对象的data的文件进行重命名
+     *
+     * @param data 对象
+     */
+    private void rename(MediaInfo data) {
+        String s = data.getTagName();
+        String newName = s + "E" + data.getE();
+        String filePath = data.getFile().getPath();
+        String fileName = data.getFileName();
+        filePath = filePath.substring(0, filePath.indexOf(fileName));
+        String newFileName = filePath + newName + "." + data.getFileSuffix();
+        data.getFile().renameTo(new File(newFileName));
+        System.out.println(newFileName);
+    }
+
+    private void detailVideoFile(TreeNode<MediaInfo> node, MediaInfo mediaInfo) {
         File file = mediaInfo.getFile();
         if (file.isDirectory()) {
             File[] files = file.listFiles();
@@ -72,7 +103,8 @@ public class RenameJob {
     public String findE(String str) {
         List<String> regs = Arrays.asList(
                 "\\.*[eE]([0-9]+)\\.*",
-                "\\[[0-9]+\\]"
+                "\\[[0-9]+\\]",
+                "\\【[0-9]+\\】"
         );
         for (String r : regs) {
             String s = find(r, str);
@@ -100,20 +132,4 @@ public class RenameJob {
         return null;
     }
 
-    public void detailVideoFile(File file) {
-        if (file.isFile()) {
-            String name = file.getName();
-            System.out.println(name);
-            String[] split = name.split("\\.");
-            if (split.length <= 1) {
-                //文件没有类型，不处理
-                return;
-            }
-            String fileSuffix = split[split.length - 1];
-            if (!MediaConstants.VIDEO_SUFFIX_SET.contains(fileSuffix)) {
-                return;
-            }
-            System.out.println("文件类型：" + fileSuffix);
-        }
-    }
 }

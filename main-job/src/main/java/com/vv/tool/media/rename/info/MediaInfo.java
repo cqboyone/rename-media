@@ -21,6 +21,15 @@ public class MediaInfo {
     private boolean isMediaFile;
     private boolean isMediaInfo;
 
+    /**
+     * 第几季，预留
+     */
+    private Integer s;
+    /**
+     * 第几集
+     */
+    private Integer e;
+
     public MediaInfo(File file) {
         this.file = file;
         fileName = file.getName();

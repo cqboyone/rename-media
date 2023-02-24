@@ -32,6 +32,9 @@ public class MainJobApplicationTests {
         System.out.println(node);
     }
 
+    /**
+     * 测试提取字符串
+     */
     @Test
     public void testP(){
         String sqlServerDateTime = "小猪佩奇第一季.Peppa.Pig.Season.1.E04.4K.WEB-DL.H265.AAC-OurTV.mp4";
@@ -44,10 +47,16 @@ public class MainJobApplicationTests {
         }
     }
 
+    /**
+     * 对指文件夹内的所有文件重新编号
+     */
     @Test
-    public void testFileName(){
-        String e = new RenameJob("").findE("[DBD-Raws][龙珠][153][1080P][BDRip][HEVC-10bit][FLAC]");
-        System.out.println(e);
-    }
+    public void reNumber(){
+        String rootPath = "/Volumes/0717.fun-1/downloads/龙珠改/S07";
+        RenameJob job = new RenameJob(rootPath);
+        job.doJob();
+        TreeNode<MediaInfo> node = job.getNode();
 
+        System.out.println();
+    }
 }
