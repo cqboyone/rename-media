@@ -36,27 +36,31 @@ public class MainJobApplicationTests {
      * 测试提取字符串
      */
     @Test
-    public void testP(){
+    public void testP() {
         String sqlServerDateTime = "小猪佩奇第一季.Peppa.Pig.Season.1.E04.4K.WEB-DL.H265.AAC-OurTV.mp4";
         String reg = "\\.*[eE]([0-9]+)\\.*";    // ( 为特殊字符，需要用 \\ 转义
         Pattern p = Pattern.compile(reg);
         Matcher m = p.matcher(sqlServerDateTime);
-        if(m.find()){
-           Object rawData = m.group(1);
+        if (m.find()) {
+            Object rawData = m.group(1);
             System.out.println(rawData);  // 组提取字符串 0x993902CE
         }
     }
 
     /**
      * 对指文件夹内的所有文件重新编号
+     * 如对：龙珠改 下面文件重新编号
+     * 龙珠改/S01
+     * 龙珠改/S01/【CXRAW】【ドラゴンボール改】【001】【闘いの幕開け! 帰ってきたぞ孫悟空】【BDrip】【1080P】【HEVC Main10P FLAC】【MKV】.mkv
+     * 龙珠改/S01/【CXRAW】【ドラゴンボール改】【002】【闘いの幕開け! 帰ってきたぞ孫悟空】【BDrip】【1080P】【HEVC Main10P FLAC】【MKV】.mkv
+     * 龙珠改/S02
+     * 龙珠改/S02/【CXRAW】【ドラゴンボール改】【027】【闘いの幕開け! 帰ってきたぞ孫悟空】【BDrip】【1080P】【HEVC Main10P FLAC】【MKV】.mkv
+     * 龙珠改/S02/【CXRAW】【ドラゴンボール改】【028】【闘いの幕開け! 帰ってきたぞ孫悟空】【BDrip】【1080P】【HEVC Main10P FLAC】【MKV】.mkv
      */
     @Test
-    public void reNumber(){
-        String rootPath = "/Volumes/0717.fun-1/downloads/龙珠改/S07";
+    public void reNumber() {
+        String rootPath = "/Volumes/-1/downloads/龙珠改";
         RenameJob job = new RenameJob(rootPath);
         job.doJob();
-        TreeNode<MediaInfo> node = job.getNode();
-
-        System.out.println();
     }
 }
